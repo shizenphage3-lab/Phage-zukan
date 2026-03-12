@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ファージずかん</title>
+<style>
+
+body{
+margin:0;
+font-family:sans-serif;
+background:#0b1e2d;
+color:white;
+}
+
+header{
+text-align:center;
+padding:30px;
+}
+
+h1{
+font-size:40px;
+}
+
+.subtitle{
+font-size:18px;
+color:#a8e6ff;
+}
+
+.controls{
+text-align:center;
+margin-bottom:20px;
+}
+
+select{
+font-size:18px;
+padding:8px;
+border-radius:8px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:#123a50;
+border-radius:15px;
+padding:15px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.card:hover{
+transform:scale(1.05);
+}
+
+.card img{
+width:100%;
+border-radius:10px;
+}
+
+.name{
+font-size:20px;
+margin-top:10px;
+}
+
+.host{
+color:#9de3ff;
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.8);
+display:none;
+align-items:center;
+justify-content:center;
+}
+
+.modal-content{
+background:#0e2f3f;
+padding:30px;
+border-radius:15px;
+max-width:600px;
+}
+
+.modal img{
+width:100%;
+margin-top:10px;
+border-radius:10px;
+}
+
+button{
+margin-top:15px;
+padding:10px 15px;
+border:none;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+<header>
+<h1>🦠 ファージずかん</h1>
+<p class="subtitle">ばい菌の世界をさぐろう！</p>
+</header>
+<div class="controls">
+<select id="hostFilter">
+<option value="all">すべて</option>
+</select>
+</div>
+<section class="grid" id="grid"></section>
+<div class="modal" id="modal">
+<div class="modal-content">
+<h2 id="m-name"></h2>
+<img id="m-illust">
+<img id="m-photo">
+<p id="m-desc"></p>
+</div>
+</div>
+<script>
+
+const phages=[
+
+{
+name:"T4ファージ",
+host:"大腸菌",
+illust:"t4_illust.png",
+photo:"t4_em.jpg",
+desc:"ロケットみたいな形のファージ。大腸菌にくっついてふえる。"
+},
+
+{
+name:"ラムダファージ",
+host:"大腸菌",
+illust:"lambda_illust.png",
+photo:"lambda_em.jpg",
+desc:"遺伝子研究で有名なファージ。"
+},
+
+{
+name:"P22",
+host:"サルモネラ",
+illust:"p22_illust.png",
+photo:"p22_em.jpg",
+desc:"サルモネラに感染するファージ。"
+}
+
+];
+
+const grid=document.getElementById("grid");
+
+function render(list){
+
+grid.innerHTML="";
+
+list.forEach(p=>{
+
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<img src="${p.illust}">
+<div class="name">${p.name}</div>
+<div class="host">すみか：${p.host}</div>
+`;
+
+card.onclick=()=>openModal(p);
+
+grid.appendChild(card);
+
+});
+
+}
+
+function buildHostList(){
+
+const hosts=[...new Set(phages.map(p=>p.host))];
+
+const select=document.getElementById("hostFilter");
+
+hosts.forEach(h=>{
+
+const opt=document.createElement("option");
+opt.value=h;
+opt.textContent=h;
+
+select.appendChild(opt);
+
+});
+
+}
+
+document.getElementById("hostFilter").onchange=()=>{
+
+const host=document.getElementById("hostFilter").value;
+
+if(host==="all") render(phages);
+
+else render(phages.filter(p=>p.host===host));
+
+};
+
+function openModal(p){
+
+document.getElementById("modal").style.display="flex";
+
+document.getElementById("m-name").textContent=p.name;
+
+document.getElementById("m-illust").src=p.illust;
+
+document.getElementById("m-photo").src=p.photo;
+
+document.getElementById("m-desc").textContent=p.desc;
+
+}
+
+function closeModal(){
+
+document.getElementById("modal").style.display="none";
+
+}
+
+buildHostList();
+
+render(phages);
+
+</script>
+</body>
+</html>
+:::
+phage-zukan
+
+index.html
+
+images
+t4_illust.png
+lambda_illust.png
+
+em
+t4_em.jpg
+lambda_em.jpg
